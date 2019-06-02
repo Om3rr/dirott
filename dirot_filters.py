@@ -1,21 +1,26 @@
 RECHAVIA = 573
 BEIT_HAKEREM = 544
 RASKO = 561
-
+OLD_KATAMON = 562
+KIRYAT_SHMUEL = 572
+TALABIA = 574
 FILTERS = [
     {
         "hood": RECHAVIA,
-        "price_low": 3000,
-        "price_high": 4500
     },
     {
         "hood": RASKO,
-        "price_low": 3000,
-        "price_high": 4500
     },
     {
         "hood": BEIT_HAKEREM,
-        "price_low": 3000,
-        "price_high": 4500
+    },
+    {
+        "hood": OLD_KATAMON,
+    },
+    {
+        "hood": TALABIA
+    },
+    {
+        "hood": KIRYAT_SHMUEL
     }
 ]

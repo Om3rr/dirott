@@ -1,5 +1,5 @@
 from sqlalchemy import Sequence
-from sqlalchemy import Integer, Column, create_engine, ForeignKey, String, DateTime
+from sqlalchemy import Integer, Column, create_engine, ForeignKey, String, DateTime, Text
 from alchemy import Base
 import re
 class Dira(Base):
@@ -14,6 +14,9 @@ class Dira(Base):
     rooms = Column(Integer)
     floor = Column(Integer)
     merchant = Column(String)
+    pictures = Column(Text)
+    picture_count = Column(Integer)
+    entry_date = Column(String)
 
 
     def href(self):
@@ -22,6 +25,10 @@ class Dira(Base):
     def from_tivuch(self):
         return self.merchant != None
 
+    def images(self):
+        return self.pictures.split(",")
+
+
     def to_telegram(self):
         return '''
         *{tivuch}*
@@ -29,9 +36,11 @@ class Dira(Base):
         המחיר הוא *{price}*
         גודל *{size}* מ"ר ובקומה *{floor}*
         בדירה יש *{rooms}* חדרים
+        כניסה ב{entry}
         {href}
         '''.format(street=self.street, hood=self.hood, price=self.price, floor=self.floor, size=self.size,
-                   rooms=self.rooms, href=self.href(), home_id=self.home_id, tivuch=("מתיווך" if self.from_tivuch() else ""))
+                   rooms=self.rooms, href=self.href(), home_id=self.home_id, tivuch=("מתיווך" if self.from_tivuch() else ""),
+                   entry=self.entry_date)
     @staticmethod
     def parse(item):
         hood = item.get("neighborhood")
@@ -42,14 +51,30 @@ class Dira(Base):
         floor = item.get("TotalFloor_text")
         home_id = item.get("HomeTypeID_text")
         merchant = item.get("merchant_name")
+        picture_count = item.get("images_count")
+        entry_date = item.get("date_of_entry")
+
+        images = Dira.get_images(item)
         return Dira(id=item.get('id'), hood=hood,
                     street=street, rooms=rooms,
                     price=price, size=size,
                     floor=floor, home_id=home_id,
-                    merchant=merchant
+                    merchant=merchant, pictures=images, picture_count=picture_count, entry_date=entry_date
                     )
 
 
     @staticmethod
     def relevant(item):
         return item.get('id') != None
+
+
+    @staticmethod
+    def get_images(item):
+        count = item.get("images_count")
+        pics = []
+        if(count == 0):
+            return ''
+        for i in range(1,count+1):
+            pics.append(item.get("images").get("Image%s"%i).get("src"))
+        return ",".join(pics)
+

@@ -10,10 +10,10 @@ class Scraper:
         }
 
 
-    def get_dirot(self, hood=573, price_low=3000, price_high=4500):
+    def get_dirot(self, hood=573, price_low=3000, price_high=4500, rooms=2):
         print("hood", hood, "low", price_low, "high", price_high)
-        url = "https://www.yad2.co.il/api/pre-load/getFeedIndex/realestate/rent?city=3000&neighborhood={hood}&price={low}-{high}&compact-req=1".format(
-            hood=hood, low=price_low, high=price_high
+        url = "https://www.yad2.co.il/api/pre-load/getFeedIndex/realestate/rent?city=3000&neighborhood={hood}&rooms={rooms}--1&price={low}-{high}&compact-req=1".format(
+            hood=hood, low=price_low, high=price_high, rooms=rooms
         )
         resp = self.session.get(url).json()
         dirots = []
